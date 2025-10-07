@@ -1,0 +1,69 @@
+import { createContext, useContext, useState, useCallback, useMemo } from "react";
+
+const PaymentContext = createContext();
+
+export const PaymentProvider = ({ children }) => {
+    const [cartDetails, setCartDetails] = useState({
+        total: 75,
+        qty: 1,
+    });
+
+    // Address details
+    const [address, setAddress] = useState({
+        fullName: "",
+        mobile: "",
+        door: "",
+        street: "",
+        city: "",
+        district: "",
+        pincode: "",
+        state: "",
+        landmark: "",
+    });
+
+    const [isFormValid, setIsFormValid] = useState(false);
+
+    // This will be called on every change in the form
+    const updateAddress = useCallback((field, value) => {
+        setAddress((prev) => {
+            // Only update if the value actually changed
+            if (prev[field] === value) return prev;
+            return { ...prev, [field]: value };
+        });
+    }, []);
+
+    const value = useMemo(() => ({ address, updateAddress }), [address, updateAddress]);
+
+    const increaseQty = (price) => {
+        setCartDetails((prev) => ({
+            qty: prev.qty + 1,
+            total: prev.total + 75,
+        }));
+    };
+
+    const decreaseQty = (price) => {
+        setCartDetails((prev) => ({
+            qty: prev.qty > 0 ? prev.qty - 1 : 0,
+            total: prev.total - 75,
+        }));
+    };
+
+    // Address Handler
+    const saveAddress = (data) => {
+        setAddress(data);
+    };
+
+    const updateFormValidity = useCallback((valid) => {
+        setIsFormValid(valid);
+    }, []);
+
+    return (
+        <PaymentContext.Provider
+            value={{ cartDetails, increaseQty, decreaseQty, address, setAddress, saveAddress, value, updateAddress, updateFormValidity, isFormValid }}
+        >
+            {children}
+        </PaymentContext.Provider>
+    );
+};
+
+export const usePayment = () => useContext(PaymentContext);
