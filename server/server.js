@@ -1,11 +1,13 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import bodyParser from "body-parser";
+import dotenv from 'dotenv';
 const app = express();
 // Middleware
 app.use(bodyParser.json());
 import Razorpay from "razorpay";
-const PORT = 3004;
+dotenv.config();
+const PORT = process.env.PORT || 3004;
 
 // ✅ MongoDB connection
 mongoose.connect(
