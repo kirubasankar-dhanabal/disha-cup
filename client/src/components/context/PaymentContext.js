@@ -33,16 +33,16 @@ export const PaymentProvider = ({ children }) => {
         });
     }, []);
 
-    const value = useMemo(() => ({ address, updateAddress }), [address, updateAddress]);
+    const addressValue = useMemo(() => ({ address, updateAddress }), [address, updateAddress]);
 
-    const increaseQty = (price) => {
+    const increaseQty = () => {
         setCartDetails((prev) => ({
             qty: prev.qty + 1,
             total: prev.total + 75,
         }));
     };
 
-    const decreaseQty = (price) => {
+    const decreaseQty = () => {
         setCartDetails((prev) => ({
             qty: prev.qty > 0 ? prev.qty - 1 : 0,
             total: prev.total - 75,
@@ -64,7 +64,7 @@ export const PaymentProvider = ({ children }) => {
 
     return (
         <PaymentContext.Provider
-            value={{ cartDetails, increaseQty, decreaseQty, address, setAddress, saveAddress, value, updateAddress, updateFormValidity, isFormValid, updateShipping }}
+            value={{ cartDetails, setCartDetails, increaseQty, decreaseQty, address, setAddress, saveAddress, addressValue, updateAddress, updateFormValidity, isFormValid, updateShipping }}
         >
             {children}
         </PaymentContext.Provider>

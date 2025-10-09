@@ -1,10 +1,11 @@
 import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
 import { usePayment } from "./context/PaymentContext";
 
 const PaymentSummaryBar = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { cartDetails, address, isFormValid } = usePayment();
+  const { cartDetails, address, isFormValid, setCartDetails } = usePayment();
 
   // const average = (total / qty).toFixed(0);
 
@@ -16,7 +17,12 @@ const PaymentSummaryBar = () => {
     console.log("New Address", address, cartDetails);
     if (isAddressPage) {
       if (isFormValid) {
-        initPayment();
+        checkoutGetOrder({
+          amount: cartDetails.total + cartDetails.shipping,
+        }).then((res) => {
+          if (res?.id)
+            initPayment(res);
+        });
       } else {
         alert("Form not ready!");
       }
@@ -25,16 +31,27 @@ const PaymentSummaryBar = () => {
     }
   };
 
+  const checkoutGetOrder = async (params) => {
+    return axios
+      .post(`/create-order`, params)
+      .then((res) => {
+        return res?.data;
+      })
+      .catch((err) => {
+        return null;
+      });
+  };
+
   const initPayment = (res) => {
     let options = {
-      key: `rzp_test_IBSJsMDXvgI2bl`,
+      key: `rzp_test_RRN0HxqFo7IhJ4`,
       name: `kkigo Apparels`,
       description: "Test Payment",
-      order_id: "order_RPiJBrjsIZnleY",
+      order_id: res.id,
       prefill: {
-        name: "xxxx",
-        email: "xxxx@gmail.com",
-        contact: "91"+ 9876543210,
+        name: "Kirubasankar D",
+        email: "kirubasankard2@gmail.com",
+        contact: "91" + 9688727025,
       },
       notes: {
         testing: "testing detail",
@@ -46,7 +63,15 @@ const PaymentSummaryBar = () => {
     };
     options = {
       ...options,
-      handler: (response) => alert(response),
+      handler: (response) => {
+        alert("Your paymentment done and payment id is " + response.razorpay_payment_id)
+        setCartDetails({
+        total: 75,
+        qty: 1,
+        shipping:0
+        });
+        navigate("/");
+      },
     };
     const razerPay = new window.Razorpay(options);
     razerPay.open();
