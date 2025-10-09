@@ -6,6 +6,7 @@ export const PaymentProvider = ({ children }) => {
     const [cartDetails, setCartDetails] = useState({
         total: 75,
         qty: 1,
+        shipping:0
     });
 
     // Address details
@@ -57,9 +58,13 @@ export const PaymentProvider = ({ children }) => {
         setIsFormValid(valid);
     }, []);
 
+    const updateShipping = (value) => {
+        setCartDetails(value);
+    };
+
     return (
         <PaymentContext.Provider
-            value={{ cartDetails, increaseQty, decreaseQty, address, setAddress, saveAddress, value, updateAddress, updateFormValidity, isFormValid }}
+            value={{ cartDetails, increaseQty, decreaseQty, address, setAddress, saveAddress, value, updateAddress, updateFormValidity, isFormValid, updateShipping }}
         >
             {children}
         </PaymentContext.Provider>

@@ -1,5 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
+import { useLocation } from "react-router-dom";
 import { usePayment } from "./context/PaymentContext";
 
 const AddressForm = () => {
@@ -9,8 +10,8 @@ const AddressForm = () => {
     formState: { errors, isValid },
     watch
   } = useForm({ mode: "onChange" });
-  const { cartDetails, updateAddress, updateFormValidity } = usePayment();
-
+  const { cartDetails, updateAddress, updateFormValidity, updateShipping } = usePayment();
+  const { pathname } = useLocation();
   // Watch all fields
   const watchedFields = watch();
 
@@ -31,6 +32,37 @@ const AddressForm = () => {
   //   saveAddress(data);
   //   alert("Form submitted successfully!");
   // };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    document.body.style.overflow = "auto";
+    document.documentElement.style.overflow = "auto";
+  }, [pathname]);
+
+  useMemo(() => {
+    const selectedState = watchedFields.state;
+    const qty = cartDetails.qty || 1;
+
+    let shipping = 0;
+
+    // 📦 Shipping rules
+    if (selectedState && selectedState !== "TN" && qty > 10) {
+      shipping = 80;
+    } else if (selectedState && selectedState !== "TN" && qty <= 10) {
+      shipping = 50;
+    } else if (selectedState === "TN" && qty > 10) {
+      shipping = 50;
+    } else {
+      shipping = 0;
+    }
+
+    updateShipping({
+      ...cartDetails,
+      shipping,
+      // ✅ use subtotal, not total
+    });
+
+  }, [watchedFields.state, cartDetails.qty]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
@@ -246,12 +278,12 @@ const AddressForm = () => {
 
             <div className="flex justify-between items-center text-gray-700 mb-2">
               <span>🚚 Shipping Amount</span>
-              <span className="font-semibold">₹0</span>
+              <span className="font-semibold">₹{cartDetails.shipping}</span>
             </div>
 
             <div className="flex justify-between items-center font-bold text-gray-900 text-lg mt-4 mb-4">
               <span>📅 மொத்தம் (Total)</span>
-              <span>₹{cartDetails.total}</span>
+              <span>₹{cartDetails.total + cartDetails.shipping}</span>
             </div>
 
             <p className="text-gray-600 text-sm leading-relaxed">

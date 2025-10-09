@@ -1,12 +1,19 @@
 import Counter from "./helper/Counter";
 import { usePayment } from "./context/PaymentContext";
+import { useEffect } from "react";
 
 const Dashboard = () => {
 
-    const { cartDetails, setCartDetails } = usePayment();
+  const { cartDetails, setCartDetails } = usePayment();
 
- return(
-     <div className="max-w-3xl mx-auto bg-white rounded-3xl shadow-xl p-6">
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    document.body.style.overflow = "auto";
+    document.documentElement.style.overflow = "auto";
+  }, []);
+
+  return (
+    <div className="max-w-3xl mx-auto bg-white rounded-3xl shadow-xl p-6">
       <div className="">
         <div className="md:flex-shrink-0 p-6">
           <img className='mx-auto' src="https://files.nithra.mobi/nithra-calendar/Tamil-calendar/notification/2026_calendar.webp" alt="2026 நித்ரா மாத காலண்டர்" />
@@ -56,7 +63,7 @@ const Dashboard = () => {
         </div>
       </div>
     </div>
- )
+  )
 }
 
 export default Dashboard;

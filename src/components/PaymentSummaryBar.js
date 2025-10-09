@@ -10,7 +10,7 @@ const PaymentSummaryBar = () => {
 
   // Determine button label and behavior
   const isAddressPage = location.pathname === "/address";
-  const buttonLabel = isAddressPage ? `Pay ₹${cartDetails.total}` : `Pay Now ₹${cartDetails.total}`;
+  const buttonLabel = isAddressPage ? `Pay ₹${cartDetails.total + cartDetails.shipping}` : `Pay Now ₹${cartDetails.total}`;
 
   const handleClick = async () => {
     console.log("New Address", address, cartDetails);
