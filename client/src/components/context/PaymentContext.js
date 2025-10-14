@@ -33,8 +33,6 @@ export const PaymentProvider = ({ children }) => {
         });
     }, []);
 
-    const addressValue = useMemo(() => ({ address, updateAddress }), [address, updateAddress]);
-
     const increaseQty = () => {
         setCartDetails((prev) => ({
             qty: prev.qty + 1,
@@ -49,11 +47,6 @@ export const PaymentProvider = ({ children }) => {
         }));
     };
 
-    // Address Handler
-    const saveAddress = (data) => {
-        setAddress(data);
-    };
-
     const updateFormValidity = useCallback((valid) => {
         setIsFormValid(valid);
     }, []);
@@ -64,7 +57,7 @@ export const PaymentProvider = ({ children }) => {
 
     return (
         <PaymentContext.Provider
-            value={{ cartDetails, setCartDetails, increaseQty, decreaseQty, address, setAddress, saveAddress, addressValue, updateAddress, updateFormValidity, isFormValid, updateShipping }}
+            value={{ cartDetails, setCartDetails, increaseQty, decreaseQty, address, setAddress, updateAddress, updateFormValidity, isFormValid, updateShipping }}
         >
             {children}
         </PaymentContext.Provider>
