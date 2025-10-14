@@ -20,8 +20,8 @@ mongoose.connect(
     });
 
 const instance = new Razorpay({
-    key_id: "rzp_test_RRN0HxqFo7IhJ4",
-    key_secret: "KVcG6N2y4z6GOPfAW0hJwizj",
+    key_id: process.env.NODEAPI_TEST_ID,
+    key_secret: process.env.NODEAPI_SECRET_KEY,
 });
 
 app.post("/create-order", async (req, res) => {
