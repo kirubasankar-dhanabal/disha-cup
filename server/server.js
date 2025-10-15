@@ -2,12 +2,23 @@ import express from 'express';
 import mongoose from 'mongoose';
 import bodyParser from "body-parser";
 import dotenv from 'dotenv';
+import cors from 'cors';
 const app = express();
 // Middleware
 app.use(bodyParser.json());
 import Razorpay from "razorpay";
 dotenv.config();
 const PORT = process.env.PORT || 3004;
+
+// Allow CORS from your Netlify frontend
+app.use(cors({
+  origin: 'https://dish-cup-soft-hummingbird-4646c6.netlify.app', // <-- replace with your real Netlify site
+  methods: ['GET', 'POST', 'OPTIONS'],
+  credentials: true, // optional: allow cookies/headers
+}));
+
+// To handle preflight requests (optional but recommended)
+app.options('*', cors());
 
 // ✅ MongoDB connection
 mongoose.connect(
