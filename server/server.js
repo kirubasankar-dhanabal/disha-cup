@@ -6,6 +6,7 @@ import cors from 'cors';
 const app = express();
 // Middleware
 app.use(bodyParser.json());
+import Order from './Order.js';
 import Razorpay from "razorpay";
 dotenv.config();
 const PORT = process.env.PORT || 3004;
@@ -36,10 +37,26 @@ const instance = new Razorpay({
 });
 
 app.post("/create-order", async (req, res) => {
+
+    const { amount, address } = req.body;
+
     const options = {
-        amount: req.body.amount * 100, // amount in paise
+        amount: amount * 100, // amount in paise
+        currency: "INR",
+        receipt: `receipt_${Date.now()}`,
     };
     const order = await instance.orders.create(options);
+    
+    // Save to DB
+    const newOrder = new Order({
+      orderId: order.id,
+      amount,
+      address,
+      status: "created",
+    });
+
+    await newOrder.save();
+
     res.json(order);
 });
 
