@@ -4,6 +4,8 @@ const orderSchema = new mongoose.Schema({
   orderId: { type: String, required: true },        // Razorpay order id
   paymentId: { type: String },                      // Razorpay payment id (after success)
   amount: { type: Number, required: true },
+  shipping: { type: Number },
+  qty: { type: Number, required: true },
   address: {
     name: String,
     phone: String,
