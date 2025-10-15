@@ -33,7 +33,7 @@ const PaymentSummaryBar = () => {
 
   const checkoutGetOrder = async (params) => {
     return axios
-      .post(`/create-order`, params)
+      .post(`https://disha-cup-6.onrender.com/create-order`, params)
       .then((res) => {
         return res?.data;
       })
