@@ -38,7 +38,7 @@ const instance = new Razorpay({
 
 app.post("/create-order", async (req, res) => {
 
-    const { amount, address } = req.body;
+    const { amount, address, qty, shipping } = req.body;
 
     const options = {
         amount: amount * 100, // amount in paise
@@ -51,7 +51,9 @@ app.post("/create-order", async (req, res) => {
     const newOrder = new Order({
       orderId: order.id,
       amount,
+      qty,
       address,
+      shipping,
       status: "created",
     });
 
