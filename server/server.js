@@ -7,6 +7,7 @@ const app = express();
 // Middleware
 app.use(bodyParser.json());
 import Order from './Order.js';
+import FailedPayment from './FailedPayment.js';
 import Razorpay from "razorpay";
 dotenv.config();
 const PORT = process.env.PORT || 3004;
@@ -60,6 +61,30 @@ app.post("/create-order", async (req, res) => {
     await newOrder.save();
 
     res.json(order);
+});
+
+app.post("/payment-failed", async (req, res) => {
+    try {
+        const { customerName, mobile, code, description, source, step, reason, metadata } = req.body;
+        // Example: save to MongoDB
+        const failedPayment = new FailedPayment({
+            customerName,
+            mobile,
+            errorCode: code,
+            description,
+            reason,
+            source,
+            step,
+            orderId: metadata?.order_id,
+            paymentId: metadata?.payment_id,
+            rawError: req.body, // keep full payload for debugging
+        });
+        await failedPayment.save();
+        res.json({ success: true, message: "Payment failure status saved successfully" });
+    } catch (err) {
+        console.error("Error saving failed payment:", err);
+        res.status(500).json({ error: "Failed to log payment failure" });
+    }
 });
 
 app.listen(PORT, () => {
