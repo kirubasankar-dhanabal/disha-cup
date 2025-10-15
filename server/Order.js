@@ -6,15 +6,17 @@ const orderSchema = new mongoose.Schema({
   amount: { type: Number, required: true },
   shipping: { type: Number },
   qty: { type: Number, required: true },
-  address: {
-    name: String,
-    phone: String,
-    line1: String,
-    line2: String,
-    city: String,
-    state: String,
-    pincode: String,
-  },
+    address: {
+        fullName: String,
+        mobile: String,
+        door: String,
+        street: String,
+        city: String,
+        district: String,
+        pincode: String,
+        state: String,
+        landmark: String
+    },
   status: { type: String, default: "created" },     // created, paid, failed
   createdAt: { type: Date, default: Date.now },
 });

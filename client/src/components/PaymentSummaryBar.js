@@ -18,7 +18,9 @@ const PaymentSummaryBar = () => {
     if (isAddressPage) {
       if (isFormValid) {
         checkoutGetOrder({
-          amount: cartDetails.total + cartDetails.shipping,
+          amount: cartDetails.total,
+          shipping: cartDetails.shipping,
+          qty: cartDetails.qty,
           address: address
         }).then((res) => {
           if (res?.id)
