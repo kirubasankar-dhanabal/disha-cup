@@ -44,5 +44,5 @@
   "devDependencies": {
     "tailwindcss": "^3.4.18"
   },
-  "proxy": "http://localhost:3004"
+  "proxy": "https://disha-cup-6.onrender.com"
 }

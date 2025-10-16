@@ -6,6 +6,7 @@ const PaymentSummaryBar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { cartDetails, address, isFormValid, setCartDetails } = usePayment();
+  let failureHandled = false;
 
   // const average = (total / qty).toFixed(0);
 
@@ -36,7 +37,7 @@ const PaymentSummaryBar = () => {
 
   const checkoutGetOrder = async (params) => {
     return axios
-      .post(`https://disha-cup-6.onrender.com/create-order`, params)
+      .post(`/create-order`, params)
       .then((res) => {
         return res?.data;
       })
@@ -47,8 +48,8 @@ const PaymentSummaryBar = () => {
 
   const initPayment = (res) => {
     let options = {
-      key: `rzp_test_RRN0HxqFo7IhJ4`,
-      name: `kkigo Apparels`,
+      key: process.env.REACT_APP_RAZORPAY_API,
+      name: process.env.REACT_APP_RAZORPAY_NAME,
       description: "Test Payment",
       order_id: res.id,
       prefill: {
@@ -78,6 +79,33 @@ const PaymentSummaryBar = () => {
     };
     const razerPay = new window.Razorpay(options);
     razerPay.open();
+
+    razerPay.off("payment.failed");
+    // ⚠️ Handle Payment Failure
+    razerPay.on("payment.failed", function (response) {
+      if (failureHandled) return;
+      failureHandled = true;
+      // alert("❌ Payment Failed!\nReason: " + response.error.description);
+      const failureData = {
+        customerName: address.fullName,
+        mobile: address.mobile,
+        code: response.error.code,
+        description: response.error.description,
+        source: response.error.source,
+        step: response.error.step,
+        reason: response.error.reason,
+        metadata: {
+            order_id: response.error.metadata?.order_id,
+            payment_id: response.error.metadata?.payment_id,
+        },
+        rawError: response.error, // optional
+      };
+      return axios.post("/payment-failed", failureData).then((res) => {
+        return res?.data;
+      }).catch((err) => {
+        return console.log("Error", err);
+      });
+    });
   };
 
   return (
