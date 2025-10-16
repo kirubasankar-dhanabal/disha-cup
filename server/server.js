@@ -6,8 +6,8 @@ import cors from 'cors';
 const app = express();
 // Middleware
 app.use(bodyParser.json());
-import Order from './Order.js';
-import FailedPayment from './FailedPayment.js';
+import Order from './schemas/Order.js';
+import FailedPayment from './schemas/FailedPayment.js';
 import Razorpay from "razorpay";
 dotenv.config();
 const PORT = process.env.PORT || 3004;
